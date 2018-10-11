@@ -47,12 +47,12 @@ void loop() {
       case 'r': // right
         Serial.println("Right!");
         left_motor(fspeed);
-        right_motor(hspeed);
+        right_motor(hspeed); //for tank or high friction chassis, otherwise use -fspeed)
         reset_ending_timestamp();
         break;
       case 'l': // left
         Serial.println("Left!");
-        left_motor(hspeed);
+        left_motor(hspeed); //for tank or high friction chassis, otherwise use -fspeed)
         right_motor(fspeed);
         reset_ending_timestamp();
         break;
