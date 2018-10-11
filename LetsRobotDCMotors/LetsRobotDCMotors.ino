@@ -21,45 +21,40 @@ void loop() {
   }
   if (Serial.available()) {
     char inByte = Serial.read();
+    /* It takes just over 1 millisecond for a character to be delivered   
+     * via the serial connection. We wait for 2ms after each character to 
+     * allow another character to come in on the line. We then respond to 
+     * only the last command received, throwing the rest away.
+     * 
+     * This overcomes an issue in how the web interface handles desktop
+     * vs. mobile users. 
+     */
     delay(2);
-    if (Serial.available()) Serial.println("still stuff in the serial stream");  
-    else Serial.println("stream empty");  
     while (Serial.available()) {
       char tempByte = Serial.read();
-      delay(2);
+      delay(2);       // See note above about why we need to wait for characters to be completed.
       if (tempByte != 10 && tempByte != 13) inByte = tempByte;  // Keep reading bytes until you have the last one.
     }
-    Serial.println("Last data read: "+(String)inByte);
     switch (inByte) {
       //______________Motors______________
       case 'f': // forward
-        Serial.println("Forward!");
         left_motor(fspeed);
         right_motor(fspeed);
         reset_ending_timestamp();
         break;
       case 'b': // back
-        Serial.println("Back!");
         left_motor(-fspeed);
         right_motor(-fspeed);
         reset_ending_timestamp();
         break;
       case 'r': // right
-        Serial.println("Right!");
         left_motor(fspeed);
-        right_motor(hspeed); //for tank or high friction chassis, otherwise use -fspeed)
+        right_motor(hspeed); //for tank or chassis that turns poorly in place, otherwise use -fspeed
         reset_ending_timestamp();
         break;
       case 'l': // left
-        Serial.println("Left!");
-        left_motor(hspeed); //for tank or high friction chassis, otherwise use -fspeed)
+        left_motor(hspeed); //for tank or chassis that turns poorly in place, otherwise use -fspeed
         right_motor(fspeed);
-        reset_ending_timestamp();
-        break;
-      case 's': // stop
-        Serial.println("Stop!!"); // For debugging only. The pi does not send this.
-        left_motor(0);
-        right_motor(0);
         reset_ending_timestamp();
         break;
       default:
