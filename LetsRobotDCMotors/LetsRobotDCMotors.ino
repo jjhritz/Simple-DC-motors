@@ -17,7 +17,9 @@ void loop() {
   currentTimestamp = millis();
   if (currentTimestamp > finishCommandTimestamp) {
         left_motor(0);
-        right_motor(0);    
+        right_motor(0);
+        arm_motor(0);
+        claw_motor(0);    
   }
   if (Serial.available()) {
     char inByte = Serial.read();
@@ -55,6 +57,22 @@ void loop() {
       case 'l': // left
         left_motor(hspeed); //for tank or chassis that turns poorly in place, otherwise use -fspeed
         right_motor(fspeed);
+        reset_ending_timestamp();
+        break;
+      case 'u': //  raise arm
+        arm_motor(fspeed);
+        reset_ending_timestamp();
+        break;
+      case 'd': // lower arm
+        arm_motor(-fspeed);
+        reset_ending_timestamp();
+        break;
+      case 'o': // open claw
+        claw_motor(fspeed);
+        reset_ending_timestamp();
+        break;
+      case 'c': // close claw
+        claw_motor(-fspeed);
         reset_ending_timestamp();
         break;
       default:
